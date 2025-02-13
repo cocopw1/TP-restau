@@ -8,13 +8,15 @@ import { MenuComponent } from './pages/menu/menu.component';
 import { AuthInterceptor } from './interceptors/auth.interceptor';
 import { LoginComponent } from './pages/login/login.component';
 import { ReactiveFormsModule } from '@angular/forms';
-
+import { CookieService } from 'ngx-cookie-service';
+import { PanierComponent } from './pages/panier/panier.component';
 @NgModule({
   declarations: [
     AppComponent,
     HomeComponent,
     MenuComponent,
-    LoginComponent
+    LoginComponent,
+    PanierComponent
   ],
   imports: [
     BrowserModule,
@@ -24,6 +26,7 @@ import { ReactiveFormsModule } from '@angular/forms';
     AppRoutingModule
   ],
   providers: [
+    CookieService,
     provideClientHydration(withEventReplay()),
     { provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true }
   ],

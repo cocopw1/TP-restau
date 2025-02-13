@@ -11,8 +11,14 @@ export class ApiService {
   constructor(private http: HttpClient) {}
 
   // Exemple : Récupérer une liste d'éléments
-  getItems(): Observable<any> {
+  getPlats(): Observable<any> {
     return this.http.get(`${this.baseUrl}/Plats`);
+  }
+  getBoissons(): Observable<any> {
+    return this.http.get(`${this.baseUrl}/Boissons`);
+  }
+  getDessert(): Observable<any> {
+    return this.http.get(`${this.baseUrl}/Desserts`);
   }
 
   // Exemple : Envoyer des données en POST

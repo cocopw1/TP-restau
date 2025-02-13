@@ -22,6 +22,16 @@ app.get('/plats', (req, res) => {
     res.send(result)
   });
 })
+app.get('/Boissons', (req, res) => {
+  dbi.get_all_Boissons().then((result)=>{
+    res.send(result)
+  });
+})
+app.get('/Desserts', (req, res) => {
+  dbi.get_all_Dessert().then((result)=>{
+    res.send(result)
+  });
+})
 const jwt = require('jsonwebtoken'); // Importation de jsonwebtoken
 
 const secretKey = 'd2ba641298ec1028ad6a6f0c0bcf2cc8851268dbeef7694c822139eefe475b4422d36f369b87613198a336b3d6cb6b3fb833017cd7c0993cf69c12f1666ec7b5'; // Remplacez par une clé secrète que vous utiliserez pour signer vos tokens

@@ -41,6 +41,38 @@ var get_all_Plats= async function(){
         })
     })
 }
+var get_all_Dessert= async function(){
+    return new Promise((resolve, reject) => {
+        connection.connect((err) => {
+            if (err) {
+                reject(err)
+            }
+            connection.query('SELECT * FROM DESSERTS', (err, results) => {
+                if (err) {
+                    reject(err);
+                } else {
+                    resolve(results);
+                }
+            });
+        })
+    })
+}
+var get_all_Boissons= async function(){
+    return new Promise((resolve, reject) => {
+        connection.connect((err) => {
+            if (err) {
+                reject(err)
+            }
+            connection.query('SELECT * FROM BOISSONS', (err, results) => {
+                if (err) {
+                    reject(err);
+                } else {
+                    resolve(results);
+                }
+            });
+        })
+    })
+}
 var login = async function(data){
     let email = data.email;
     let password= data.password;
@@ -84,5 +116,7 @@ var add_Plats = function(data){
 module.exports = {
     login,
     get_all_Plats,
+    get_all_Boissons,
+    get_all_Dessert,
     add_Plats
 }
