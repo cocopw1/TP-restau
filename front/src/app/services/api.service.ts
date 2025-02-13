@@ -3,14 +3,20 @@ import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class ApiService {
-  private apiUrl = 'http://localhost:3000/api/data';
+  private baseUrl = 'http://localhost:3000'; // Remplace par l'URL de ton backend
 
   constructor(private http: HttpClient) {}
 
-  getData(): Observable<any> {
-    return this.http.get<any>(this.apiUrl);
+  // Exemple : Récupérer une liste d'éléments
+  getItems(): Observable<any> {
+    return this.http.get(`${this.baseUrl}/`);
+  }
+
+  // Exemple : Envoyer des données en POST
+  createItem(data: any): Observable<any> {
+    return this.http.post(`${this.baseUrl}/add`, data);
   }
 }

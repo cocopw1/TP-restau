@@ -1,22 +1,25 @@
-import { Component,OnInit } from '@angular/core';
-
+import { Component, OnInit } from '@angular/core';
 import { ApiService } from '../../services/api.service';
 
 @Component({
   selector: 'app-menu',
-  imports: [],
+  standalone: false,
   templateUrl: './menu.component.html',
   styleUrl: './menu.component.css'
 })
 export class MenuComponent {
-
-  data: any;
+  items: any[] = [];
 
   constructor(private apiService: ApiService) {}
 
   ngOnInit() {
-    this.apiService.getData().subscribe(response => {
-      this.data = response;
-    });
+    this.apiService.getItems().subscribe(
+      (data) => {
+        this.items = data;
+      },
+      (error) => {
+        console.error('Erreur lors du chargement des données', error);
+      }
+    );
   }
 }
