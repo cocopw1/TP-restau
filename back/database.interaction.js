@@ -41,6 +41,25 @@ var get_all_Plats= async function(){
         })
     })
 }
+var login = async function(data){
+    let email = data.email;
+    let password= data.password;
+    return new Promise((resolve, reject) => {
+        connection.connect((err) => {
+            if (err) {
+                reject(err)
+            }
+            connection.query(`select * from user where email = "${email}" and password = "${password}";`, (err, results) => {
+                if (err) {
+                    reject(err);
+                } else {
+                    resolve(results);
+                }
+            });
+        })
+    })
+}
+
 var add_Plats = function(data){
     connection.connect((err) => {
         if (err) {
@@ -63,6 +82,7 @@ var add_Plats = function(data){
     
 }
 module.exports = {
+    login,
     get_all_Plats,
     add_Plats
 }

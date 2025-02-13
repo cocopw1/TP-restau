@@ -7,7 +7,11 @@ data = {
     "descr": "un California roll au oignon frits"
 }
 
-response = requests.post('http://localhost:3000/add', json=data)
-
+#response = requests.post('http://localhost:3000/add', json=data)
+data = {
+    "email": "marchal@et.esiea.fr",
+    "password": "test"
+}
+response = requests.post('http://localhost:3000/login', json=data)
 print("Statut de la requête :", response.status_code)
 print("Réponse du serveur :", response.text)
