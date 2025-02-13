@@ -12,7 +12,7 @@ export class ApiService {
 
   // Exemple : Récupérer une liste d'éléments
   getItems(): Observable<any> {
-    return this.http.get(`${this.baseUrl}/`);
+    return this.http.get(`${this.baseUrl}/Plats`);
   }
 
   // Exemple : Envoyer des données en POST

@@ -9,7 +9,8 @@ import { ApiService } from '../../services/api.service';
 })
 export class MenuComponent {
   items: any[] = [];
-
+  
+  activeTab: string = 'plats'; // Par défaut, l'onglet "Plats" est actif
   constructor(private apiService: ApiService) {}
 
   ngOnInit() {
@@ -21,5 +22,9 @@ export class MenuComponent {
         console.error('Erreur lors du chargement des données', error);
       }
     );
+  }
+
+  setActiveTab(tab: string) {
+    this.activeTab = tab;
   }
 }
