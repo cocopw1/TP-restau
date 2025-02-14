@@ -1,4 +1,81 @@
 <p>menu works!</p>
-<ul>
-    <li *ngFor="let item of items">{{ item.nom }}</li>
-  </ul>
+
+<div style="padding: 1%;">
+    <div class="container mt-4">
+        <!-- Onglets Bootstrap -->
+        <ul class="nav nav-tabs" id="menuTabs">
+          <li class="nav-item">
+            <a class="nav-link active" (click)="setActiveTab('plats')" [class.active]="activeTab === 'plats'">Plats</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" (click)="setActiveTab('boissons')" [class.active]="activeTab === 'boissons'">Boissons</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" (click)="setActiveTab('desserts')" [class.active]="activeTab === 'desserts'">Desserts</a>
+          </li>
+        </ul>
+      
+        <!-- Contenu des onglets -->
+        <div class="tab-content mt-3">
+          <div *ngIf="activeTab === 'plats'" class="tab-pane fade show active">
+            <h3>Plats</h3>
+            <p>Liste des plats disponibles...</p>
+            <div class="component text-center">
+                <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 g-3">
+                    <div *ngFor="let item of Plats" class="col">
+                        <div class="card h-100 shadow">
+                            <img src="{{item.imgsrc}}" alt="{{item.nom}}" class="img-fluid">
+                            <div class="card-body">
+                                <h5 class="card-title">{{ item.nom }}</h5>
+                                <h6 class="card-subtitle text-muted">{{item.prix}} €</h6>
+                                <p class="card-text">{{item.descr}}</p>
+                                <button class="btn btn-primary" (click)="ajouterAuPanier(item)">Ajouter au Panier</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+          </div>
+          <div *ngIf="activeTab === 'boissons'" class="tab-pane fade show active">
+            <h3>Boissons</h3>
+            <p>Liste des boissons...</p>
+            <div class="component text-center">
+                <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 g-3">
+                    <div *ngFor="let item of Boissons" class="col">
+                        <div class="card h-100 shadow">
+                            <img src="{{item.imgsrc}}" alt="{{item.nom}}" class="img-fluid">
+                            <div class="card-body">
+                                <h5 class="card-title">{{ item.nom }}</h5>
+                                <h6 class="card-subtitle text-muted">{{item.prix}} €</h6>
+                                <p class="card-text">{{item.descr}}</p>
+                                <button class="btn btn-primary" (click)="ajouterAuPanier(item)">Ajouter au Panier</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+          </div>
+          <div *ngIf="activeTab === 'desserts'" class="tab-pane fade show active">
+            <h3>Desserts</h3>
+            <p>Liste des desserts...</p>
+            <div class="component text-center">
+                <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 g-3">
+                    <div *ngFor="let item of Dessert" class="col">
+                        <div class="card h-100 shadow">
+                            <img src="{{item.imgsrc}}" alt="{{item.nom}}" class="img-fluid">
+                            <div class="card-body">
+                                <h5 class="card-title">Menu {{ item.nom }}</h5>
+                                <h6 class="card-subtitle text-muted">{{item.prix}} €</h6>
+                                <p class="card-text">{{item.descr}}</p>
+                                <button class="btn btn-primary" (click)="ajouterAuPanier(item)">Ajouter au Panier</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+        

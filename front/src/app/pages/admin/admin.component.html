@@ -1,0 +1,47 @@
+<div class="container mt-5">
+    <h2 class="text-center mb-4">Ajouter un article</h2>
+  
+    <div class="card shadow p-4">
+      <form [formGroup]="itemForm" (ngSubmit)="onSubmit()">
+        <!-- Catégorie -->
+        <div class="mb-3">
+          <label class="form-label">Catégorie</label>
+          <select class="form-select" formControlName="category">
+            <option value="Plats">Plats</option>
+            <option value="Boissons">Boissons</option>
+            <option value="Desserts">Desserts</option>
+          </select>
+        </div>
+  
+        <!-- Nom -->
+        <div class="mb-3">
+          <label class="form-label">Nom</label>
+          <input type="text" class="form-control" formControlName="name" placeholder="Nom du produit">
+        </div>
+  
+        <!-- Prix -->
+        <div class="mb-3">
+          <label class="form-label">Prix (€)</label>
+          <input type="number" class="form-control" formControlName="price" placeholder="Prix en euros">
+        </div>
+  
+        <!-- Lien Image -->
+        <div class="mb-3">
+          <label class="form-label">Lien de l'image</label>
+          <input type="text" class="form-control" formControlName="imageUrl" placeholder="https://image.com/mon-produit.jpg">
+        </div>
+  
+        <!-- Description -->
+        <div class="mb-3">
+          <label class="form-label">Description</label>
+          <textarea class="form-control" formControlName="description" rows="3" placeholder="Description du produit"></textarea>
+        </div>
+  
+        <!-- Bouton Ajouter -->
+        <button type="submit" class="btn btn-success w-100" [disabled]="itemForm.invalid">
+          Ajouter l'article
+        </button>
+      </form>
+    </div>
+  </div>
+  

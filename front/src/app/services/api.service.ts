@@ -11,10 +11,28 @@ export class ApiService {
   constructor(private http: HttpClient) {}
 
   // Exemple : Récupérer une liste d'éléments
-  getItems(): Observable<any> {
-    return this.http.get(`${this.baseUrl}/`);
+  getPlats(): Observable<any> {
+    return this.http.get(`${this.baseUrl}/Plats`);
   }
-
+  getBoissons(): Observable<any> {
+    return this.http.get(`${this.baseUrl}/Boissons`);
+  }
+  getDessert(): Observable<any> {
+    return this.http.get(`${this.baseUrl}/Desserts`);
+  }
+  Commande(info:any): Observable<any>{
+    console.log(info)
+    return this.http.post(`${this.baseUrl}/commande`, info);
+  }
+  postPlats(data:any):Observable<any> {
+    return this.http.post(`${this.baseUrl}/plats`, data);
+  }
+  postBoissons(data:any):Observable<any> {
+    return this.http.post(`${this.baseUrl}/Boissons`, data);
+  }
+  postDessert(data:any):Observable<any> {
+    return this.http.post(`${this.baseUrl}/Desserts`, data);
+  }
   // Exemple : Envoyer des données en POST
   createItem(data: any): Observable<any> {
     return this.http.post(`${this.baseUrl}/add`, data);

@@ -1,13 +1,17 @@
 import requests
 
 data = {
-    "name": "Spagetti Maki",
-    "prix": 17,
-    "imgsrc": """https://truffle-assets.tastemadecontent.net/cdn-cgi/image/width=1080/6910df1c-_spaghettisushi_square2.jpg""",
-    "descr": "un maki inspirer de la cuisine italienne"
+    "name": "Onion California roll",
+    "prix": 13,
+    "imgsrc": """https://gumisushi.com/wp-content/uploads/2023/05/california-roll-avocat-saumon-oignons-frits.jpg""",
+    "descr": "un California roll au oignon frits"
 }
 
-response = requests.post('http://localhost:3000/add', json=data)
-
+response = requests.post('http://localhost:3000/commande', json=data)
+data = {
+    "email": "marchal@et.esiea.fr",
+    "password": "test"
+}
+#response = requests.post('http://localhost:3000/login', json=data)
 print("Statut de la requête :", response.status_code)
 print("Réponse du serveur :", response.text)
