@@ -60,10 +60,20 @@ app.post('/login', (req, res) => {
     res.status(500).send('Internal Server Error');
   });
 });
-app.post('/add', (req, res) => {
+app.post('/plats', (req, res) => {
   console.log("Données reçues :", req.body); // ✅ Affiche le JSON envoyé
   dbi.add_Plats(req.body)
-  res.send('Requête reçue');
+  res.status(204).send();
+});
+app.post('/boissons', (req, res) => {
+  console.log("Données reçues :", req.body); // ✅ Affiche le JSON envoyé
+  dbi.add_Boissons(req.body)
+  res.status(204).send();
+});
+app.post('/desserts', (req, res) => {
+  console.log("Données reçues :", req.body); // ✅ Affiche le JSON envoyé
+  dbi.add_Desserts(req.body)
+  res.status(204).send();
 });
 
 app.listen(port, () => {
