@@ -20,7 +20,10 @@ export class ApiService {
   getDessert(): Observable<any> {
     return this.http.get(`${this.baseUrl}/Desserts`);
   }
-
+  Commande(info:any): Observable<any>{
+    console.log(info)
+    return this.http.post(`${this.baseUrl}/commande`, info);
+  }
   // Exemple : Envoyer des données en POST
   createItem(data: any): Observable<any> {
     return this.http.post(`${this.baseUrl}/add`, data);

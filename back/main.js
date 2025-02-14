@@ -32,6 +32,10 @@ app.get('/Desserts', (req, res) => {
     res.send(result)
   });
 })
+app.post('/Commande', (req, res) => {
+  console.log(req.body)
+  res.status(204).send();
+})
 const jwt = require('jsonwebtoken'); // Importation de jsonwebtoken
 
 const secretKey = 'd2ba641298ec1028ad6a6f0c0bcf2cc8851268dbeef7694c822139eefe475b4422d36f369b87613198a336b3d6cb6b3fb833017cd7c0993cf69c12f1666ec7b5'; // Remplacez par une clé secrète que vous utiliserez pour signer vos tokens
@@ -56,12 +60,6 @@ app.post('/login', (req, res) => {
     res.status(500).send('Internal Server Error');
   });
 });
-app.get('/dessert', (req, res) => {
-  dbi.get_all_Dessert().then((result)=>{
-    res.send(result)
-  });
-})
-
 app.post('/add', (req, res) => {
   console.log("Données reçues :", req.body); // ✅ Affiche le JSON envoyé
   dbi.add_Plats(req.body)

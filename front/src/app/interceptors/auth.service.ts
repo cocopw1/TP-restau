@@ -13,8 +13,6 @@ export class AuthService {
   constructor(private http: HttpClient) {}
 
    login(credentials: { email: string, password: string }) {
-    const headers = new HttpHeaders({ 'Content-Type': 'application/json' });
-
     console.log('Envoi des données :', credentials);
     return this.http.post<{ token: string }>(`${this.apiUrl}/login`, credentials).pipe(
       tap(response => {

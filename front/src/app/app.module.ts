@@ -10,17 +10,22 @@ import { LoginComponent } from './pages/login/login.component';
 import { ReactiveFormsModule } from '@angular/forms';
 import { CookieService } from 'ngx-cookie-service';
 import { PanierComponent } from './pages/panier/panier.component';
+import { ValidateComponent } from './pages/validate/validate.component';
+import { CommandeComponent } from './pages/commande/commande.component';
+import { AdminComponent } from './pages/admin/admin.component';
 @NgModule({
   declarations: [
     AppComponent,
     HomeComponent,
     MenuComponent,
     LoginComponent,
-    PanierComponent
+    PanierComponent,
+    ValidateComponent,
+    CommandeComponent,
+    AdminComponent
   ],
   imports: [
     BrowserModule,
-    
     ReactiveFormsModule,
     HttpClientModule,
     AppRoutingModule
