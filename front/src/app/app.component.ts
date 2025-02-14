@@ -23,6 +23,6 @@ export class AppComponent {
   logout() {
     this.authService.logout();
     this.isLoggedIn = false;
-    window.location.href = '/login'; // ✅ Redirection après déconnexion
+    window.location.href = '/home'; // ✅ Redirection après déconnexion
   }
 }
