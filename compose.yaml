@@ -1,0 +1,32 @@
+version: '3.8'
+
+services:
+  mariadb:
+    image: mariadb:latest
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: toor
+      MYSQL_DATABASE: db
+      MYSQL_USER: root
+      MYSQL_PASSWORD: toor
+    ports:
+      - "127.0.1.1:3306:3306"
+    volumes:
+      - mariadb_data:/var/lib/mysql
+
+  app_backend:
+    build:
+      context: ./back
+    depends_on:
+      - mariadb
+    environment:
+      - DB_HOST=mariadb
+      - DB_USER=root
+      - DB_PASSWORD=toor
+      - DB_NAME=db
+      - DB_PORT=3306
+    entrypoint: ["/bin/sh", "-c", "sleep 30 && exec \"$@\"", "--"]
+    ports:
+      - "3000:3000"
+volumes:
+  mariadb_data:

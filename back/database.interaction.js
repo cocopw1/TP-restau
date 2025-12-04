@@ -1,165 +1,55 @@
-const mysql = require('mysql2');
+// back/database.interaction.js
+const mysql = require('mysql2/promise');
 
-const connection = mysql.createConnection({
-  host: 'localhost',  // Ou l'IP de ton conteneur
-  user: 'root',
-  password: 'toor',
-  database: 'db',
-  port: 3306
+const pool = mysql.createPool({
+  host: process.env.DB_HOST || 'mariadb',
+  user: process.env.DB_USER || 'root',
+  password: process.env.DB_PASSWORD || 'toor',
+  database: process.env.DB_NAME || 'db',
+  port: process.env.DB_PORT ? Number(process.env.DB_PORT) : 3306,
+  waitForConnections: true,
+  connectionLimit: 10,
+  queueLimit: 0
 });
 
-// connection.connect((err) => {
-//   if (err) {
-//     console.error('Erreur de connexion :', err);
-//     return;
-//   }
-//   console.log('✅ Connecté à MariaDB !');
-
-//   // Exemple : récupérer les tables de la base
-//   connection.query('ALTER TABLE PLATS MODIFY COLUMN id INT AUTO_INCREMENT;', (err, results) => {
-//     if (err) {
-//       console.error('Erreur lors de la requête :', err);
-//     } else {
-//       console.log('Tables disponibles :', results);
-//     }
-//   });
-//   connection.end();
-// });
-var get_all_Plats= async function(){
-    return new Promise((resolve, reject) => {
-        connection.connect((err) => {
-            if (err) {
-                reject(err)
-            }
-            connection.query('SELECT * FROM PLATS', (err, results) => {
-                if (err) {
-                    reject(err);
-                } else {
-                    resolve(results);
-                }
-            });
-        })
-    })
-}
-var get_all_Dessert= async function(){
-    return new Promise((resolve, reject) => {
-        connection.connect((err) => {
-            if (err) {
-                reject(err)
-            }
-            connection.query('SELECT * FROM DESSERTS', (err, results) => {
-                if (err) {
-                    reject(err);
-                } else {
-                    resolve(results);
-                }
-            });
-        })
-    })
-}
-var get_all_Boissons= async function(){
-    return new Promise((resolve, reject) => {
-        connection.connect((err) => {
-            if (err) {
-                reject(err)
-            }
-            connection.query('SELECT * FROM BOISSONS', (err, results) => {
-                if (err) {
-                    reject(err);
-                } else {
-                    resolve(results);
-                }
-            });
-        })
-    })
-}
-var login = async function(data){
-    let email = data.email;
-    let password= data.password;
-    return new Promise((resolve, reject) => {
-        connection.connect((err) => {
-            if (err) {
-                reject(err)
-            }
-            connection.query(`select * from user where email = "${email}" and password = "${password}";`, (err, results) => {
-                if (err) {
-                    reject(err);
-                } else {
-                    resolve(results);
-                }
-            });
-        })
-    })
+async function get_all_Plats() {
+  const [rows] = await pool.query('SELECT * FROM PLATS');
+  return rows;
 }
 
-var add_Plats = function(data){
-    connection.connect((err) => {
-        if (err) {
-          console.error('Erreur de connexion :', err);
-          return;
-        }
-        let name =data.name;
-        let imgsrc =data.imgsrc;
-        let descr =data.descr;
-        let prix =data.prix;
-
-        connection.query('INSERT INTO PLATS (nom, prix, imgsrc, descr) values ("${1}", ${2}, "${3}", "${4}" )'.replace("${1}",name).replace("${3}",imgsrc).replace("${2}",prix).replace("${4}",descr), (err, results) => {
-            if (err) {
-                console.error('Erreur lors de la requête :', err);
-            } else {
-                console.log(results);
-            }
-        });
-    })
-    
+async function get_all_Dessert() {
+  const [rows] = await pool.query('SELECT * FROM DESSERTS');
+  return rows;
 }
-var add_Boissons = function(data){
-    connection.connect((err) => {
-        if (err) {
-          console.error('Erreur de connexion :', err);
-          return;
-        }
-        let name =data.name;
-        let imgsrc =data.imgsrc;
-        let descr =data.descr;
-        let prix =data.prix;
 
-        connection.query('INSERT INTO BOISSONS (nom, prix, imgsrc, descr) values ("${1}", ${2}, "${3}", "${4}" )'.replace("${1}",name).replace("${3}",imgsrc).replace("${2}",prix).replace("${4}",descr), (err, results) => {
-            if (err) {
-                console.error('Erreur lors de la requête :', err);
-            } else {
-                console.log(results);
-            }
-        });
-    })
-    
+async function get_all_Boissons() {
+  const [rows] = await pool.query('SELECT * FROM BOISSONS');
+  return rows;
 }
-var add_Desserts = function(data){
-    connection.connect((err) => {
-        if (err) {
-          console.error('Erreur de connexion :', err);
-          return;
-        }
-        let name =data.name;
-        let imgsrc =data.imgsrc;
-        let descr =data.descr;
-        let prix =data.prix;
 
-        connection.query('INSERT INTO DESSERTS (nom, prix, imgsrc, descr) values ("${1}", ${2}, "${3}", "${4}" )'.replace("${1}",name).replace("${3}",imgsrc).replace("${2}",prix).replace("${4}",descr), (err, results) => {
-            if (err) {
-                console.error('Erreur lors de la requête :', err);
-            } else {
-                console.log(results);
-            }
-        });
-    })
-    
+async function login(data) {
+  const [rows] = await pool.query('SELECT * FROM user WHERE email = ? AND password = ?', [data.email, data.password]);
+  return rows && rows.length ? rows[0] : undefined;
 }
+
+async function add_Plats(data) {
+  await pool.query('INSERT INTO PLATS (nom, prix, imgsrc, descr) VALUES (?, ?, ?, ?)', [data.name, data.prix, data.imgsrc, data.descr]);
+}
+
+async function add_Boissons(data) {
+  await pool.query('INSERT INTO BOISSONS (nom, prix, imgsrc, descr) VALUES (?, ?, ?, ?)', [data.name, data.prix, data.imgsrc, data.descr]);
+}
+
+async function add_Desserts(data) {
+  await pool.query('INSERT INTO DESSERTS (nom, prix, imgsrc, descr) VALUES (?, ?, ?, ?)', [data.name, data.prix, data.imgsrc, data.descr]);
+}
+
 module.exports = {
-    login,
-    get_all_Plats,
-    get_all_Boissons,
-    get_all_Dessert,
-    add_Plats,
-    add_Desserts,add_Boissons
-}
+  login,
+  get_all_Plats,
+  get_all_Boissons,
+  get_all_Dessert,
+  add_Plats,
+  add_Desserts,
+  add_Boissons
+};
