@@ -6,12 +6,10 @@ WORKDIR /app
 
 # Copy package files and install dependencies
 COPY package*.json ./
-RUN npm install --production
+RUN npm install
 
 # Copy source code
-COPY ./main.js ./
-COPY ./package-lock.json ./
-COPY database.interaction.js ./
+COPY ./*.js ./
 
 # Expose backend port (change if needed)
 EXPOSE 3000
