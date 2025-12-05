@@ -17,7 +17,6 @@ import { SignupComponent } from './pages/signup/signup.component';
   declarations: [
     AppComponent,
     HomeComponent,
-    InfoComponent,
     LoginComponent,
     AdminComponent,
     FormsComponent,
@@ -29,7 +28,8 @@ import { SignupComponent } from './pages/signup/signup.component';
     FormsModule,
     HttpClientModule,
     AppRoutingModule,
-    SonComponent
+    SonComponent,
+    InfoComponent
   ],
   providers: [
     CookieService,
