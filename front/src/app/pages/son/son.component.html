@@ -21,5 +21,11 @@
            "
            [style.filter]="'hue-rotate(' + cat.hue + 'deg)'">
     }
+    
+    @if (!isPlaying) {
+      <button class="play-button" (click)="handleUserInteraction()">
+        CLICK HERE TO PLAY MUSIC
+      </button>
+    }
   </div>
 </div>

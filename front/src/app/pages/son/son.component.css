@@ -70,3 +70,34 @@ select option {
   
   transform-origin: center center;
 }
+
+.play-button {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  
+  padding: 20px 40px;
+  font-size: 1.5rem;
+  font-weight: bold;
+  color: white;
+  background: rgb(165, 3, 151);
+  border: 3px solid rgba(255, 255, 255, 0.8);
+  border-radius: 50px;
+  cursor: pointer;
+  z-index: 10000;
+  pointer-events: auto;
+  
+  transition: all 0.3s ease;
+  box-shadow: 0 0 20px rgba(255, 0, 100, 0.6);
+}
+
+.play-button:hover {
+  background: rgb(165, 3, 151);
+  transform: translate(-50%, -50%) scale(1.1);
+  box-shadow: 0 0 40px rgb(165, 3, 151);
+}
+
+.play-button:active {
+  transform: translate(-50%, -50%) scale(0.95);
+}
