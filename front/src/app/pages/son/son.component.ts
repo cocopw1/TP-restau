@@ -1,4 +1,16 @@
-import { Component, ElementRef, ViewChild, AfterViewInit, NgZone, OnDestroy } from '@angular/core';
+import { Component, ElementRef, ViewChild, AfterViewInit, NgZone, OnDestroy, Inject, PLATFORM_ID, HostListener } from '@angular/core';
+import { isPlatformBrowser } from '@angular/common';
+
+interface VortexCat {
+  angle: number;
+  distance: number;
+  hue: number;
+  scale: number;
+  x: number;
+  y: number;
+  rotation: number;
+  frequencyIndex: number; 
+}
 
 @Component({
   selector: 'app-son',
@@ -8,120 +20,167 @@ import { Component, ElementRef, ViewChild, AfterViewInit, NgZone, OnDestroy } fr
 export class SonComponent implements AfterViewInit, OnDestroy {
   @ViewChild('audioPlayer') audioPlayerRef!: ElementRef<HTMLAudioElement>;
 
-  currentTrack = 'sound/cacaestcuit.mp3'; // Chemin dans public/
+  tracks = [
+    { name: 'Happy Face', path: '/sound/HappyFace.mp3' },
+    { name: 'Filter', path: '/sound/Fliter-Jennie.mp3' },
+    { name: 'Bass', path: '/sound/bass.mp3' },
+    { name: 'Caca est cuit', path: '/sound/cacaestcuit.mp3' }
+  ];
+
+  currentTrack = this.tracks[0].path; 
   isPlaying = false;
   
-  // Variables pour la hauteur du saut (en pixels)
-  bassLevel = 0;
-  midLevel = 0;
-  trebleLevel = 0;
+  cats: VortexCat[] = [];
+  
+  centerX = 0;
+  centerY = 0;
+  globalRotation = 0; 
+  baseRadius = 200; 
 
   private audioContext!: AudioContext;
   private analyser!: AnalyserNode;
-  private source!: MediaElementAudioSourceNode;
   private animationFrameId: number | null = null;
 
-  constructor(private ngZone: NgZone) {}
+  constructor(
+    private ngZone: NgZone,
+    @Inject(PLATFORM_ID) private platformId: Object
+  ) {}
 
   ngAfterViewInit() {
-    // On n'initialise l'audio qu'au clic pour respecter les règles du navigateur
+    if (isPlatformBrowser(this.platformId)) {
+      this.initVortex();
+      this.tryStartAudio(false);
+    }
   }
 
-  initAudio() {
-    if (this.audioContext) return;
+  initVortex() {
+    this.centerX = window.innerWidth / 2;
+    this.centerY = window.innerHeight / 2;
+    this.cats = [];
 
-    // 1. Création du contexte
-    this.audioContext = new (window.AudioContext || (window as any).webkitAudioContext)();
+    const numberOfCats = 10; // ✅ 10 Gros chats
     
-    // 2. Création de l'analyser
-    this.analyser = this.audioContext.createAnalyser();
-    this.analyser.fftSize = 512; // Résolution (plus c'est haut, plus c'est précis mais coûteux)
-
-    // 3. Connexion de la source HTML Audio -> Analyser -> Sortie (Haut-parleurs)
-    this.source = this.audioContext.createMediaElementSource(this.audioPlayerRef.nativeElement);
-    this.source.connect(this.analyser);
-    this.analyser.connect(this.audioContext.destination);
-  }
-
-  togglePlay() {
-    const audioEl = this.audioPlayerRef.nativeElement;
-
-    if (!this.audioContext) {
-      this.initAudio();
-    }
-
-    // Reprendre le contexte s'il est suspendu (règle autoplay browser)
-    if (this.audioContext.state === 'suspended') {
-      this.audioContext.resume();
-    }
-
-    if (this.isPlaying) {
-      audioEl.pause();
-      this.isPlaying = false;
-      this.stopAnimationLoop();
-    } else {
-      audioEl.play();
-      this.isPlaying = true;
-      // On lance la boucle d'analyse hors de la zone Angular pour la perf
-      this.ngZone.runOutsideAngular(() => {
-        this.renderLoop();
+    for (let i = 0; i < numberOfCats; i++) {
+      this.cats.push({
+        angle: (i / numberOfCats) * (Math.PI * 2),
+        distance: this.baseRadius,
+        hue: (i / numberOfCats) * 360,
+        scale: 1,
+        x: 0, 
+        y: 0,
+        rotation: 0,
+        // ✅ On espace les fréquences : 
+        // Chat 0 écoute index 0 (Basse)
+        // Chat 9 écoute index ~40 (Medium/Aigu)
+        frequencyIndex: i * 4 
       });
     }
   }
 
-  // La boucle d'animation (60fps)
+  @HostListener('window:resize')
+  onResize() {
+    this.centerX = window.innerWidth / 2;
+    this.centerY = window.innerHeight / 2;
+  }
+
+  @HostListener('document:click')
+  handleUserInteraction() { if (!this.isPlaying) this.tryStartAudio(true); }
+
+  changeTrack(event: Event) {
+    const selectElement = event.target as HTMLSelectElement;
+    this.isPlaying = false;
+    this.audioPlayerRef.nativeElement.pause();
+    this.currentTrack = selectElement.value;
+    setTimeout(() => {
+      this.audioPlayerRef.nativeElement.load();
+      this.tryStartAudio(true);
+    }, 100);
+  }
+
+  tryStartAudio(forcePlay: boolean) {
+    if (!isPlatformBrowser(this.platformId)) return;
+    if (!this.audioContext) {
+      const AudioContext = window.AudioContext || (window as any).webkitAudioContext;
+      this.audioContext = new AudioContext();
+      this.analyser = this.audioContext.createAnalyser();
+      this.analyser.fftSize = 512; // ✅ Plus de précision
+      const source = this.audioContext.createMediaElementSource(this.audioPlayerRef.nativeElement);
+      source.connect(this.analyser);
+      this.analyser.connect(this.audioContext.destination);
+    }
+    if (this.audioContext.state === 'suspended') this.audioContext.resume();
+    if (forcePlay) {
+      this.audioPlayerRef.nativeElement.play()
+        .then(() => {
+          this.isPlaying = true;
+          this.ngZone.runOutsideAngular(() => this.renderLoop());
+        })
+        .catch(err => console.log("Lecture bloquée"));
+    }
+  }
+
   renderLoop() {
     if (!this.isPlaying) return;
-
     this.animationFrameId = requestAnimationFrame(() => this.renderLoop());
 
     const bufferLength = this.analyser.frequencyBinCount;
     const dataArray = new Uint8Array(bufferLength);
-    
-    // Remplir le tableau avec les données de fréquence actuelles (0 à 255)
     this.analyser.getByteFrequencyData(dataArray);
 
-    // Découpage approximatif du spectre
-    // Basses : début du tableau
-    // Médiums : milieu
-    // Aigus : fin
-    
-    const bassAvg = this.getAverage(dataArray, 0, bufferLength * 0.1); // 10% inférieurs
-    const midAvg = this.getAverage(dataArray, bufferLength * 0.1, bufferLength * 0.5); 
-    const trebleAvg = this.getAverage(dataArray, bufferLength * 0.5, bufferLength); 
+    const globalEnergy = this.getAverage(dataArray, 0, 40); // Moyenne sur les basses/mids
+    this.globalRotation += 0.002 + (globalEnergy / 25000); 
 
-    // Mise à jour des variables visuelles (Multiplicateur pour ajuster la hauteur du saut)
-    // On utilise ngZone.run pour dire à Angular de mettre à jour la vue
-    this.ngZone.run(() => {
-      this.bassLevel = Math.max(0, (bassAvg - 100) * 1.5); // -100 pour ignorer le bruit de fond
-      this.midLevel = Math.max(0, (midAvg - 50) * 1.5);
-      this.trebleLevel = Math.max(0, (trebleAvg - 30) * 2); 
+    this.cats.forEach((cat, i) => {
+       const dataIndex = Math.floor(cat.frequencyIndex);
+       // Protection pour ne pas lire hors du tableau
+       const safeIndex = Math.min(dataIndex, bufferLength - 1);
+       
+       const rawIntensity = dataArray[safeIndex];
+
+       // --- ÉGALISEUR ---
+       let adjustedIntensity = 0;
+       if (safeIndex < 5) {
+         adjustedIntensity = rawIntensity * 0.9; // Basses
+       } else if (safeIndex < 20) {
+         adjustedIntensity = rawIntensity * 1.5; // Mediums
+       } else {
+         adjustedIntensity = rawIntensity *1.0; // Aigus (Boostés)
+       }
+
+       // --- VISUEL ---
+       
+       // Rebond
+       const bounce = adjustedIntensity * 0.5; 
+       const currentRadius = this.baseRadius + bounce;
+
+       // Position
+       cat.x = this.centerX + Math.cos(cat.angle + this.globalRotation) * currentRadius;
+       cat.y = this.centerY + Math.sin(cat.angle + this.globalRotation) * currentRadius;
+
+       // ✅ TAILLE REVUE : 
+       // Base à 1.0 (taille normale) + Boost
+       cat.scale = 1.0 + (adjustedIntensity / 300);
+
+       // Rotation Wiggle
+       cat.rotation = (cat.angle + this.globalRotation) * (180 / Math.PI) + 90;
+
+       // Couleur
+       cat.hue = (i * 30 + (globalEnergy / 10)) % 360; 
     });
+
+    this.ngZone.run(() => { /* Update View */ });
   }
 
-  // Utilitaire pour calculer la moyenne d'une plage de fréquences
   private getAverage(array: Uint8Array, start: number, end: number): number {
     let sum = 0;
-    const count = end - start;
-    for (let i = Math.floor(start); i < Math.floor(end); i++) {
-      sum += array[i];
-    }
-    return count > 0 ? sum / count : 0;
+    for (let i = start; i < end; i++) sum += array[i];
+    return sum / (end - start || 1);
   }
 
-  stopAnimationLoop() {
-    if (this.animationFrameId) {
-      cancelAnimationFrame(this.animationFrameId);
-    }
-    this.bassLevel = 0;
-    this.midLevel = 0;
-    this.trebleLevel = 0;
-  }
+  stopAnimationLoop() { if (this.animationFrameId) cancelAnimationFrame(this.animationFrameId); }
 
   ngOnDestroy() {
     this.stopAnimationLoop();
-    if (this.audioContext) {
-      this.audioContext.close();
-    }
+    if (this.audioContext && this.audioContext.state !== 'closed') this.audioContext.close();
   }
 }

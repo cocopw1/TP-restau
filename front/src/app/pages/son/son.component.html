@@ -1,38 +1,25 @@
 <div class="concert-hall">
+  
   <div class="controls">
-    <button (click)="togglePlay()">
-      {{ isPlaying ? 'Pause' : 'Lancer la fête' }} 🎵
-    </button>
+    <select (change)="changeTrack($event)">
+      @for (t of tracks; track t.path) {
+        <option [value]="t.path">{{ t.name }}</option>
+      }
+    </select>
   </div>
   
-  <audio #audioPlayer 
-       [src]="currentTrack" 
-       (ended)="isPlaying = false" 
-       crossorigin="anonymous">
-  </audio>
+  <audio #audioPlayer [src]="currentTrack" crossorigin="anonymous" loop></audio>
 
-  <div class="stage">
-    
-    <div class="cat-container">
-      <img src="images/cat.jpg" 
-           [style.transform]="'translateY(-' + bassLevel + 'px)'" 
-           alt="Bass Cat">
-      <span>Graves</span>
-    </div>
-
-    <div class="cat-container">
-      <img src="images/cat.jpg" 
-           [style.transform]="'translateY(-' + midLevel + 'px)'" 
-           alt="Mid Cat">
-      <span>Médiums</span>
-    </div>
-
-    <div class="cat-container">
-      <img src="images/cat.jpg" 
-           [style.transform]="'translateY(-' + trebleLevel + 'px)'" 
-           alt="Treble Cat">
-      <span>Aigus</span>
-    </div>
-
+  <div class="vortex-container">
+    @for (cat of cats; track $index) {
+      <img src="images/bibu.png" 
+           class="vortex-cat"
+           [style.transform]="
+             'translate3d(' + (cat.x - 40) + 'px, ' + (cat.y - 40) + 'px, 0) ' + 
+             'scale(' + cat.scale + ') ' + 
+             'rotate(' + cat.rotation + 'deg)'
+           "
+           [style.filter]="'hue-rotate(' + cat.hue + 'deg)'">
+    }
   </div>
 </div>

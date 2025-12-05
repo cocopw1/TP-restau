@@ -1,50 +1,83 @@
-/* disco-cats.component.css */
+/* son.component.css */
+
+/* 1. Le conteneur : On enlève le fond noir pour voir le site */
 .concert-hall {
   position: fixed;
   bottom: 0;
   left: 0;
   width: 100%;
   height: 100vh;
-  pointer-events: none; /* Laisse l'utilisateur cliquer sur le reste du site */
-  display: flex;
-  flex-direction: column;
-  justify-content: flex-end;
-  z-index: 1000; /* En fond */
-  background: rgba(0, 0, 0, 0.8); /* Légère ombre au sol */
+  
+  /* On garde un z-index haut pour que les chats passent DEVANT le header */
+  /* Si tu préfères qu'ils passent DERRIÈRE le texte, mets z-index: -1 */
+  z-index: 9999;
+  
+  /* IMPORTANT : Laisse passer les clics vers ton site */
+  pointer-events: none; 
+  overflow: hidden;
+  
+  /* ✅ FOND TRANSPARENT : Pour voir ton header et ton contenu */
+  background: transparent; 
 }
 
+/* 2. Le menu (Reste inchangé, toujours joli) */
 .controls {
-  pointer-events: auto; /* Réactive le clic pour le bouton */
+  pointer-events: auto;
   position: absolute;
-  top: 20px;
+  top: 80px; /* ⬇️ J'ai baissé un peu le menu au cas où ton Header est en haut */
   right: 20px;
-  z-index: 10;
+  
+  background: rgba(0, 0, 0, 0.7); /* Fond plus sombre pour être lisible sur ton site */
+  backdrop-filter: blur(5px);
+  padding: 8px 15px;
+  border-radius: 30px;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  z-index: 10001;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
 }
 
-.stage {
-  display: flex;
-  justify-content: space-around;
-  align-items: flex-end;
-  padding-bottom: 20px;
-  height: 300px; /* Espace de saut */
-}
-
-.cat-container {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  transition: transform 0.05s ease-out; /* Lissage pour éviter les saccades */
-}
-
-.cat-container img {
-  width: 100px; /* Ajuste selon tes images */
-  height: auto;
-  transition: transform 0.1s linear; /* L'animation du saut */
-}
-
-.cat-container span {
+.controls label {
   color: white;
   font-family: sans-serif;
-  margin-top: 10px;
-  opacity: 0.7;
+  font-weight: bold;
+  margin-right: 10px;
+}
+
+select {
+  background: transparent;
+  color: #fff;
+  border: none;
+  font-size: 0.9rem;
+  outline: none;
+  cursor: pointer;
+}
+
+select option {
+  background-color: #333;
+  color: white;
+}
+
+.vortex-container {
+  position: relative;
+  width: 100%;
+  height: 100%;
+}
+
+/* 3. LES CHATS : Taille réduite */
+.vortex-cat {
+  position: absolute;
+  top: 0;
+  left: 0;
+
+  /* ✅ TAILLE RÉDUITE (130px -> 100px) */
+  width: 100px; 
+  height: auto;
+
+  will-change: transform;
+  border-radius: 50%; 
+  
+  /* On adapte l'ombre pour qu'elle soit visible peu importe la couleur de ton site */
+  box-shadow: 0 0 15px rgba(0, 0, 0, 0.5), inset 0 0 10px rgba(255,255,255,0.5);
+  
+  transform-origin: center center;
 }
