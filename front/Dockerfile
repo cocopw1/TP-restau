@@ -3,26 +3,32 @@ FROM node:20-alpine as build
 
 WORKDIR /app
 
-# Copie des dépendances
 COPY package*.json ./
 RUN npm ci
 
-# Copie du code source
 COPY . .
 
 # Construction pour la production
-# Cela va créer un dossier dist/nom-du-projet/browser
 RUN npm run build -- --configuration production
 
 # Étape 2 : Serveur Web Nginx
-FROM nginx:stable-alpine
+FROM nginx:alpine
 
-# Copy custom nginx config
+# 1. Nettoyage : On supprime la page "Welcome to Nginx" par défaut
+RUN rm -rf /usr/share/nginx/html/*
+
+# Copie de la configuration Nginx
 COPY nginx.conf /etc/nginx/conf.d/default.conf
 
-# CORRECTION ICI : Ajoutez "/browser" à la fin du chemin source
+# Copie des fichiers compilés (Notez bien le /browser)
 COPY --from=build /app/dist/projet-restau/browser /usr/share/nginx/html
+
+# 2. Correction Angular SSR/Prerender :
+# Si index.html n'a pas été généré (à cause de la redirection), on utilise index.csr.html
+RUN if [ ! -f /usr/share/nginx/html/index.html ] && [ -f /usr/share/nginx/html/index.csr.html ]; then \
+        mv /usr/share/nginx/html/index.csr.html /usr/share/nginx/html/index.html; \
+    fi
 
 EXPOSE 80
 
-CMD ["/bin/sh", "-c", "echo '✅ Application Front-End démarrée ! Accessible sur http://localhost:80' && nginx -g 'daemon off;'"]
+CMD ["nginx", "-g", "daemon off;"]
