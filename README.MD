@@ -5,6 +5,11 @@
 ## moteur de base de donnée : mariadb
 ## USER Story
 
+### DEFI Visualisation Audio
+Page son
+Cliquer pour démarrer
+choix entre différentes musique libre de droit
+
 ### 1.1. Page d'accueil
 1. **En tant que visiteur**, je veux voir une belle image du restaurant pour avoir une première bonne impression. 
 2. **En tant que visiteur**, je veux lire une brève description du restaurant pour en savoir plus.
