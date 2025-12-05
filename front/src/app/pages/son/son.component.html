@@ -1,0 +1,25 @@
+<div class="concert-hall">
+  
+  <div class="controls">
+    <select (change)="changeTrack($event)">
+      @for (t of tracks; track t.path) {
+        <option [value]="t.path">{{ t.name }}</option>
+      }
+    </select>
+  </div>
+  
+  <audio #audioPlayer [src]="currentTrack" crossorigin="anonymous" loop></audio>
+
+  <div class="vortex-container">
+    @for (cat of cats; track $index) {
+      <img src="images/bibu.png" 
+           class="vortex-cat"
+           [style.transform]="
+             'translate3d(' + (cat.x - 40) + 'px, ' + (cat.y - 40) + 'px, 0) ' + 
+             'scale(' + cat.scale + ') ' + 
+             'rotate(' + cat.rotation + 'deg)'
+           "
+           [style.filter]="'hue-rotate(' + cat.hue + 'deg)'">
+    }
+  </div>
+</div>

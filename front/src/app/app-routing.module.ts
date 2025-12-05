@@ -4,6 +4,7 @@ import { HomeComponent } from './pages/home/home.component';
 import { InfoComponent } from './pages/info/info.component';
 import { LoginComponent } from './pages/login/login.component';
 import { AdminComponent } from './pages/admin/admin.component';
+import { SonComponent } from './pages/son/son.component';
 import { FormsComponent } from './pages/forms/forms.component';
 import { SignupComponent } from './pages/signup/signup.component';
 const routes: Routes = [
@@ -12,6 +13,7 @@ const routes: Routes = [
   { path: 'login', component: LoginComponent },
   { path: 'signup', component: SignupComponent },
   { path: 'admin', component: AdminComponent },
+  { path: 'son', component: SonComponent },
   {path: 'forum',component:FormsComponent},
   
 

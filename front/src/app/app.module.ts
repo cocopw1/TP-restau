@@ -10,6 +10,7 @@ import { LoginComponent } from './pages/login/login.component';
 import { ReactiveFormsModule , FormsModule} from '@angular/forms';
 import { CookieService } from 'ngx-cookie-service';
 import { AdminComponent } from './pages/admin/admin.component';
+import { SonComponent } from './pages/son/son.component';
 import { FormsComponent } from './pages/forms/forms.component';
 import { SignupComponent } from './pages/signup/signup.component';
 @NgModule({
@@ -27,7 +28,8 @@ import { SignupComponent } from './pages/signup/signup.component';
     ReactiveFormsModule,
     FormsModule,
     HttpClientModule,
-    AppRoutingModule
+    AppRoutingModule,
+    SonComponent
   ],
   providers: [
     CookieService,
