@@ -2,12 +2,12 @@ import { Component, OnInit } from '@angular/core';
 import { ApiService } from '../../services/api.service';
 import { CookieService } from 'ngx-cookie-service';
 @Component({
-  selector: 'app-menu',
+  selector: 'app-info',
   standalone: false,
-  templateUrl: './menu.component.html',
-  styleUrl: './menu.component.css'
+  templateUrl: './info.component.html',
+  styleUrl: './info.component.css'
 })
-export class MenuComponent {
+export class InfoComponent {
   Plats: any[] = [];
   Boissons: any[] = [];
   Dessert: any[] = [];
