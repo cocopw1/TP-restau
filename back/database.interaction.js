@@ -16,40 +16,27 @@ async function get_all_Posts() {
   const [rows] = await pool.query('SELECT * FROM POSTS');
   return rows;
 }
-
-async function get_all_Dessert() {
-  const [rows] = await pool.query('SELECT * FROM DESSERTS');
-  return rows;
-}
-
-async function get_all_Boissons() {
-  const [rows] = await pool.query('SELECT * FROM BOISSONS');
-  return rows;
-}
-
 async function login(data) {
-  const [rows] = await pool.query('SELECT * FROM user WHERE email = ? AND password = ?', [data.email, data.password]);
+  const [rows] = await pool.query('SELECT * FROM USERS WHERE name = ?', [data.username]);
   return rows && rows.length ? rows[0] : undefined;
 }
-
-async function add_Plats(data) {
-  await pool.query('INSERT INTO PLATS (nom, prix, imgsrc, descr) VALUES (?, ?, ?, ?)', [data.name, data.prix, data.imgsrc, data.descr]);
+async function add_Posts(article, userId, username) {
+  await pool.query('INSERT INTO POSTS (article, user_id, username) VALUES (?, ?, ?)', [article, userId, username]);
 }
-
-async function add_Boissons(data) {
-  await pool.query('INSERT INTO BOISSONS (nom, prix, imgsrc, descr) VALUES (?, ?, ?, ?)', [data.name, data.prix, data.imgsrc, data.descr]);
-}
-
-async function add_Desserts(data) {
-  await pool.query('INSERT INTO DESSERTS (nom, prix, imgsrc, descr) VALUES (?, ?, ?, ?)', [data.name, data.prix, data.imgsrc, data.descr]);
+// --- NOUVELLE FONCTION ---
+async function createUser(name, hashedPassword, isAdmin) {
+  // On insère et on récupère le résultat pour avoir l'insertId
+  const [result] = await pool.query(
+    'INSERT INTO USERS (name, password, admin) VALUES (?, ?, ?)', 
+    [name, hashedPassword, isAdmin]
+  );
+  // Avec mysql2, l'ID généré est dans result.insertId
+  return result.insertId; 
 }
 
 module.exports = {
   login,
-  get_all_Plats,
-  get_all_Boissons,
-  get_all_Dessert,
-  add_Plats,
-  add_Desserts,
-  add_Boissons
+  get_all_Posts,
+  add_Posts,
+  createUser,
 };

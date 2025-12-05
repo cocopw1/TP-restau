@@ -1,14 +1,21 @@
-import { Injectable } from '@angular/core';
+import { Injectable, Inject, PLATFORM_ID } from '@angular/core';
 import { HttpInterceptor, HttpRequest, HttpHandler, HttpEvent } from '@angular/common/http';
 import { Observable } from 'rxjs';
+import { isPlatformBrowser } from '@angular/common';
 
 @Injectable()
 export class AuthInterceptor implements HttpInterceptor {
-  intercept(req: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
-    // Récupérer le token depuis le localStorage
-    const token = localStorage.getItem('token');
 
-    // Ajouter le token dans les headers si disponible
+  constructor(@Inject(PLATFORM_ID) private platformId: Object) {}
+
+  intercept(req: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
+    let token = null;
+
+    // On ne touche à localStorage que si on est dans le navigateur
+    if (isPlatformBrowser(this.platformId)) {
+      token = localStorage.getItem('token');
+    }
+
     if (token) {
       req = req.clone({
         setHeaders: {
