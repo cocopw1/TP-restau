@@ -1,26 +1,28 @@
-# Multi-stage Dockerfile for Angular app
-# Build stage: use full Node image for reliable Angular builds
-FROM node:18-bullseye-slim AS build
+# Étape 1 : Construction de l'application Angular
+FROM node:20-alpine as build
 
 WORKDIR /app
 
-# Install dependencies
+# Copie des dépendances
 COPY package*.json ./
 RUN npm ci
 
-# Copy source and build production bundle
+# Copie du code source
 COPY . .
+
+# Construction pour la production
+# Cela va créer un dossier dist/nom-du-projet/browser
 RUN npm run build -- --configuration production
 
-# Production stage: serve with nginx
+# Étape 2 : Serveur Web Nginx
 FROM nginx:stable-alpine
 
 # Copy custom nginx config
 COPY nginx.conf /etc/nginx/conf.d/default.conf
 
-# Copy built files from build stage
-COPY --from=build /app/dist/projet-restau /usr/share/nginx/html
+# CORRECTION ICI : Ajoutez "/browser" à la fin du chemin source
+COPY --from=build /app/dist/projet-restau/browser /usr/share/nginx/html
 
 EXPOSE 80
 
-CMD ["sleep 20 && nginx", "-g", "daemon off;"]
+CMD ["/bin/sh", "-c", "echo '✅ Application Front-End démarrée ! Accessible sur http://localhost:80' && nginx -g 'daemon off;'"]

@@ -1,0 +1,53 @@
+/* Style pour le mot secret */
+.secret-trigger {
+  cursor: pointer;
+  transition: color 0.3s;
+}
+
+.secret-trigger:hover {
+  color: #34d399; /* Une petite teinte verte pour teaser le snake */
+}
+
+/* Style du jeu Snake */
+#snake-wrapper {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  
+  width: 450px;
+  padding: 15px;
+  
+  background: #0f1724;
+  border-radius: 12px;
+  color: white;
+  
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.6);
+  z-index: 99999;
+}
+
+#snake-close {
+  position: absolute;
+  top: 6px;
+  right: 10px;
+  font-size: 20px;
+  cursor: pointer;
+}
+
+#snake-close:hover {
+  color: #fb7185;
+}
+
+#snake-score-box {
+  text-align: center;
+  margin-bottom: 10px;
+  font-size: 18px;
+  font-weight: bold; 
+}
+
+canvas {
+  background: #0b1220;
+  border-radius: 8px;
+  display: block;
+  margin: 0 auto;
+}
