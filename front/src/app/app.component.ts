@@ -1,28 +1,32 @@
-import { Component } from '@angular/core';
-import { AuthService } from './interceptors/auth.service'; // ✅ Import du service
+import { Component, OnInit } from '@angular/core'; // N'oublie pas OnInit
+import { AuthService } from './interceptors/auth.service';
+import { Router } from '@angular/router'; // Pour la redirection propre
 
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.css'],
-  standalone:false
+  standalone: false
 })
-export class AppComponent {
-  isLoggedIn = false; // ✅ Variable pour gérer l'affichage de la navbar
+export class AppComponent implements OnInit {
+  isLoggedIn = false;
 
-  constructor(private authService: AuthService) {}
+  constructor(
+    private authService: AuthService,
+    private router: Router // Injection du router
+  ) {}
 
   ngOnInit() {
-    if(this.authService.isAuthenticated() == undefined){
-      this.isLoggedIn=false;
-    }else{
-      this.isLoggedIn = this.authService.isAuthenticated(); // ✅ Vérifie si l'utilisateur est connecté
-    }
+    // C'est ICI la magie : on écoute les changements en temps réel
+    this.authService.isLoggedIn$.subscribe((status) => {
+      this.isLoggedIn = status;
+    });
   }
 
   logout() {
     this.authService.logout();
-    this.isLoggedIn = false;
-    window.location.href = '/home'; // ✅ Redirection après déconnexion
+    // Plus besoin de window.location.href (mauvaise pratique en Angular)
+    // Le subscribe ci-dessus passera isLoggedIn à false tout seul.
+    this.router.navigate(['/login']); 
   }
 }

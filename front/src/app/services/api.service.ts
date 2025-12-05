@@ -6,35 +6,25 @@ import { Observable } from 'rxjs';
   providedIn: 'root',
 })
 export class ApiService {
-  private baseUrl = 'http://localhost:3000'; // Remplace par l'URL de ton backend
+  private baseUrl = 'http://localhost:3000'; 
 
   constructor(private http: HttpClient) {}
 
-  // Exemple : Récupérer une liste d'éléments
-  getPlats(): Observable<any> {
-    return this.http.get(`${this.baseUrl}/Plats`);
+  getPosts(): Observable<any> {
+    return this.http.get(`${this.baseUrl}/Posts`);
   }
-  getBoissons(): Observable<any> {
-    return this.http.get(`${this.baseUrl}/Boissons`);
+  
+  postPosts(data:any):Observable<any> {
+    return this.http.post(`${this.baseUrl}/Posts`, data);
   }
-  getDessert(): Observable<any> {
-    return this.http.get(`${this.baseUrl}/Desserts`);
-  }
-  Commande(info:any): Observable<any>{
-    console.log(info)
-    return this.http.post(`${this.baseUrl}/commande`, info);
-  }
-  postPlats(data:any):Observable<any> {
-    return this.http.post(`${this.baseUrl}/plats`, data);
-  }
-  postBoissons(data:any):Observable<any> {
-    return this.http.post(`${this.baseUrl}/Boissons`, data);
-  }
-  postDessert(data:any):Observable<any> {
-    return this.http.post(`${this.baseUrl}/Desserts`, data);
-  }
-  // Exemple : Envoyer des données en POST
+
   createItem(data: any): Observable<any> {
     return this.http.post(`${this.baseUrl}/add`, data);
+  }
+
+  // --- AJOUT POUR L'INSCRIPTION ---
+  register(data: any): Observable<any> {
+    // Le backend attend { username, password, isAdmin }
+    return this.http.post(`${this.baseUrl}/register`, data);
   }
 }

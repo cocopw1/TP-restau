@@ -1,35 +1,45 @@
 import { Component } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { AuthService } from '../../interceptors/auth.service';
+import { Router } from '@angular/router'; // Ajout du Router pour une redirection propre
 
 @Component({
   selector: 'app-login',
   templateUrl: './login.component.html',
   styleUrls: ['./login.component.css'],
-  standalone:false
+  standalone: false
 })
 export class LoginComponent {
   loginForm: FormGroup;
   errorMessage: string = '';
 
-  constructor(private fb: FormBuilder, private authService: AuthService) {
+  constructor(
+    private fb: FormBuilder, 
+    private authService: AuthService,
+    private router: Router // Injection du router
+  ) {
     this.loginForm = this.fb.group({
-      email: ['', [Validators.required, Validators.email]],
+      // Modification ici : 'username' au lieu de 'email'
+      username: ['', [Validators.required, Validators.minLength(3)]], 
       password: ['', [Validators.required, Validators.minLength(4)]]
     });
   }
 
-  onSubmit() {
-    if (this.loginForm.valid) {
-      this.authService.login(this.loginForm.value).subscribe({
-        next: (response) => {
-          console.log('Connexion réussie !');
-          window.location.href = '/home'; // ✅ Redirection APRÈS la réponse
-        },
-        error: (err) => {
-          console.error('Erreur de connexion :', err);
-        }
-      });
-    }
+  // ... imports
+
+onSubmit() {
+  if (this.loginForm.valid) {
+    this.authService.login(this.loginForm.value).subscribe({
+      next: () => {
+        console.log('Connexion réussie !');
+        // Le service a déjà mis à jour le Subject et le localStorage grâce au 'tap'
+        this.router.navigate(['/home']); 
+      },
+      error: (err) => {
+        console.error('Erreur', err);
+        this.errorMessage = "Identifiants incorrects";
+      }
+    });
   }
+}
 }

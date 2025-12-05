@@ -12,13 +12,16 @@
           <a class="nav-link" routerLink="/home" routerLinkActive="active">Accueil</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link" routerLink="/info" routerLinkActive="active">Menu</a>
+          <a class="nav-link" routerLink="/info" routerLinkActive="active">Info</a>
         </li>
         <li class="nav-item">
           <a class="nav-link" routerLink="/forum" routerLinkActive="active">forum</a>
         </li>
         <li *ngIf="!isLoggedIn"  class="nav-item">
           <a class="nav-link" routerLink="/login" routerLinkActive="active">Login</a>
+        </li>
+        <li *ngIf="!isLoggedIn"  class="nav-item">
+          <a class="nav-link" routerLink="/signup" routerLinkActive="active">Sign up</a>
         </li>
         <li *ngIf="isLoggedIn" class="nav-item">
           <a class="nav-link" routerLink="/admin" routerLinkActive="active">admin</a>
