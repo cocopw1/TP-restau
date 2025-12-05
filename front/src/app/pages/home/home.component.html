@@ -1,18 +1,30 @@
 <div class="container text-center mt-5">
-    <div class="row justify-content-center">
-      <div class="col-lg-8">
-        <h1 class="display-4 fw-bold">Bienvenue sur le site de la NIRD</h1>
-        
-        <div class="mt-4">
-          <img src="https://nird.forge.apps.education.fr/photos/livraison_primtux_classe.jpg" alt="Restaurant" class="img-fluid rounded shadow-lg">
-        </div>
-  
-        <div class="mt-5">
-          <a routerLink="/menu" class="btn btn-primary btn-lg">
-            Voir le menu <i class="bi bi-arrow-right"></i>
-          </a>
-        </div>
+  <div class="row justify-content-center">
+    <div class="col-lg-8">
+      <h1 class="display-4 fw-bold">Bienvenue sur le site de la 
+        <span (click)="toggleSnake()" class="secret-trigger">NIRD</span>
+      </h1>
+      
+      <div class="mt-4">
+        <img src="https://nird.forge.apps.education.fr/photos/livraison_primtux_classe.jpg" alt="Restaurant" class="img-fluid rounded shadow-lg">
+      </div>
+
+      <div class="mt-5">
+        <a routerLink="/menu" class="btn btn-primary btn-lg">
+          Voir le menu <i class="bi bi-arrow-right"></i>
+        </a>
       </div>
     </div>
   </div>
+</div>
+
+<div id="snake-wrapper" *ngIf="isSnakeVisible">
+  <div id="snake-close" (click)="toggleSnake()">✕</div>
+  <div id="snake-score-box">Score : <span>{{ score }}</span></div>
+  <canvas #snakeCanvas width="400" height="400"></canvas>
   
+  <div class="text-center mt-2 text-muted small">
+    Utilisez les flèches ou ZQSD pour jouer.<br>
+    Espace pour recommencer.
+  </div>
+</div>
