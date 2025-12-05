@@ -48,16 +48,31 @@ export class SonComponent implements AfterViewInit, OnDestroy {
   ngAfterViewInit() {
     if (isPlatformBrowser(this.platformId)) {
       this.initVortex();
-      this.tryStartAudio(false);
+      this.initAudioContext();
+      this.renderLoop(); // Lance la boucle tout de suite
     }
   }
+
+  
+
+private initAudioContext() {
+  if (!this.audioContext) {
+    const AudioContext = window.AudioContext || (window as any).webkitAudioContext;
+    this.audioContext = new AudioContext();
+    this.analyser = this.audioContext.createAnalyser();
+    this.analyser.fftSize = 512;
+    const source = this.audioContext.createMediaElementSource(this.audioPlayerRef.nativeElement);
+    source.connect(this.analyser);
+    this.analyser.connect(this.audioContext.destination);
+  }
+}
 
   initVortex() {
     this.centerX = window.innerWidth / 2;
     this.centerY = window.innerHeight / 2;
     this.cats = [];
 
-    const numberOfCats = 10; // ✅ 10 Gros chats
+    const numberOfCats = 10;
     
     for (let i = 0; i < numberOfCats; i++) {
       this.cats.push({
@@ -68,9 +83,6 @@ export class SonComponent implements AfterViewInit, OnDestroy {
         x: 0, 
         y: 0,
         rotation: 0,
-        // ✅ On espace les fréquences : 
-        // Chat 0 écoute index 0 (Basse)
-        // Chat 9 écoute index ~40 (Medium/Aigu)
         frequencyIndex: i * 4 
       });
     }
@@ -83,11 +95,19 @@ export class SonComponent implements AfterViewInit, OnDestroy {
   }
 
   @HostListener('document:click')
-  handleUserInteraction() { if (!this.isPlaying) this.tryStartAudio(true); }
+  handleUserInteraction() { 
+    if (this.audioContext.state === 'suspended') {
+      this.audioContext.resume();
+    }
+    if (!this.isPlaying) {
+      this.audioPlayerRef.nativeElement.play();
+      this.isPlaying = true;
+    }
+  }
 
   changeTrack(event: Event) {
     const selectElement = event.target as HTMLSelectElement;
-    this.isPlaying = false;
+    this.isPlaying = true;
     this.audioPlayerRef.nativeElement.pause();
     this.currentTrack = selectElement.value;
     setTimeout(() => {
@@ -98,40 +118,27 @@ export class SonComponent implements AfterViewInit, OnDestroy {
 
   tryStartAudio(forcePlay: boolean) {
     if (!isPlatformBrowser(this.platformId)) return;
-    if (!this.audioContext) {
-      const AudioContext = window.AudioContext || (window as any).webkitAudioContext;
-      this.audioContext = new AudioContext();
-      this.analyser = this.audioContext.createAnalyser();
-      this.analyser.fftSize = 512; // ✅ Plus de précision
-      const source = this.audioContext.createMediaElementSource(this.audioPlayerRef.nativeElement);
-      source.connect(this.analyser);
-      this.analyser.connect(this.audioContext.destination);
-    }
-    if (this.audioContext.state === 'suspended') this.audioContext.resume();
     if (forcePlay) {
-      this.audioPlayerRef.nativeElement.play()
-        .then(() => {
-          this.isPlaying = true;
-          this.ngZone.runOutsideAngular(() => this.renderLoop());
-        })
-        .catch(err => console.log("Lecture bloquée"));
+      this.audioPlayerRef.nativeElement.play().catch(err => console.log("Lecture bloquée"));
     }
   }
 
   renderLoop() {
-    if (!this.isPlaying) return;
     this.animationFrameId = requestAnimationFrame(() => this.renderLoop());
+
+    if (!this.isPlaying) {
+      return;
+    }
 
     const bufferLength = this.analyser.frequencyBinCount;
     const dataArray = new Uint8Array(bufferLength);
     this.analyser.getByteFrequencyData(dataArray);
 
-    const globalEnergy = this.getAverage(dataArray, 0, 40); // Moyenne sur les basses/mids
+    const globalEnergy = this.getAverage(dataArray, 0, 40);
     this.globalRotation += 0.002 + (globalEnergy / 25000); 
 
     this.cats.forEach((cat, i) => {
        const dataIndex = Math.floor(cat.frequencyIndex);
-       // Protection pour ne pas lire hors du tableau
        const safeIndex = Math.min(dataIndex, bufferLength - 1);
        
        const rawIntensity = dataArray[safeIndex];
@@ -148,22 +155,16 @@ export class SonComponent implements AfterViewInit, OnDestroy {
 
        // --- VISUEL ---
        
-       // Rebond
        const bounce = adjustedIntensity * 0.5; 
        const currentRadius = this.baseRadius + bounce;
 
-       // Position
        cat.x = this.centerX + Math.cos(cat.angle + this.globalRotation) * currentRadius;
        cat.y = this.centerY + Math.sin(cat.angle + this.globalRotation) * currentRadius;
 
-       // ✅ TAILLE REVUE : 
-       // Base à 1.0 (taille normale) + Boost
        cat.scale = 1.0 + (adjustedIntensity / 300);
 
-       // Rotation Wiggle
        cat.rotation = (cat.angle + this.globalRotation) * (180 / Math.PI) + 90;
 
-       // Couleur
        cat.hue = (i * 30 + (globalEnergy / 10)) % 360; 
     });
 

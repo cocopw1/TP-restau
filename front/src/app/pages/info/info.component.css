@@ -1,0 +1,21 @@
+/* Fond blanc (par défaut), on s'assure juste que le texte est lisible */
+:host {
+  display: block; /* Gris très très clair pour ne pas éblouir */
+  min-height: 100vh;
+}
+
+/* Petit effet quand on passe la souris sur les cartes du haut */
+.hover-effect {
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  background-color: white;
+}
+
+.hover-effect:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 .5rem 1rem rgba(0,0,0,.15)!important; /* Ombre Bootstrap renforcée */
+}
+
+/* Ajustement pour que la bordure verte de la liste soit jolie */
+.list-group-item {
+  border-left-width: 5px !important;
+}
