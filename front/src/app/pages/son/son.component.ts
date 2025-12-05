@@ -21,10 +21,9 @@ export class SonComponent implements AfterViewInit, OnDestroy {
   @ViewChild('audioPlayer') audioPlayerRef!: ElementRef<HTMLAudioElement>;
 
   tracks = [
-    { name: 'Happy Face', path: '/sound/HappyFace.mp3' },
-    { name: 'Filter', path: '/sound/Fliter-Jennie.mp3' },
-    { name: 'Bass', path: '/sound/bass.mp3' },
-    { name: 'Caca est cuit', path: '/sound/cacaestcuit.mp3' }
+    { name: 'Cradles', path: '/sound/SubUrban-CRADLES.mp3' },
+    { name: 'Royalty', path: '/sound/Neoni-Royalty.mp3' },
+    { name: 'Grateful', path: '/sound/NEFFEX-Grateful.mp3' }
   ];
 
   currentTrack = this.tracks[0].path; 
