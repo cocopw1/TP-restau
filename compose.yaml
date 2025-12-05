@@ -28,13 +28,13 @@ services:
     entrypoint: ["/bin/sh", "-c", "sleep 10 && node main.js"]
     ports:
       - "3000:3000"
-  app_frontend:
-    build:
-      context: ./front
-      dockerfile: Dockerfile
-    depends_on:
-      - app_backend
-    ports:
-      - "4200:4200"
+  # app_frontend:
+  #   build:
+  #     context: ./front
+  #     dockerfile: Dockerfile
+  #   depends_on:
+  #     - app_backend
+  #   ports:
+  #     - "4200:4200"
 volumes:
   mariadb_data:

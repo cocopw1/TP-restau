@@ -7,6 +7,7 @@ import { PanierComponent } from './pages/panier/panier.component';
 import { ValidateComponent } from './pages/validate/validate.component';
 import { CommandeComponent } from './pages/commande/commande.component';
 import { AdminComponent } from './pages/admin/admin.component';
+import { SonComponent } from './pages/son/son.component';
 const routes: Routes = [
   { path: 'home', component: HomeComponent },
   {path:'menu',component:MenuComponent},
@@ -15,7 +16,7 @@ const routes: Routes = [
   { path: 'validate', component: ValidateComponent },
   { path: 'commande', component: CommandeComponent },
   { path: 'admin', component: AdminComponent },
-  
+  { path: 'son', component: SonComponent },
 
   { path: '', redirectTo: '/home', pathMatch: 'full' }
 ];

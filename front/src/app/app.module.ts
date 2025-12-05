@@ -13,6 +13,7 @@ import { PanierComponent } from './pages/panier/panier.component';
 import { ValidateComponent } from './pages/validate/validate.component';
 import { CommandeComponent } from './pages/commande/commande.component';
 import { AdminComponent } from './pages/admin/admin.component';
+import { SonComponent } from './pages/son/son.component';
 @NgModule({
   declarations: [
     AppComponent,
@@ -28,7 +29,8 @@ import { AdminComponent } from './pages/admin/admin.component';
     BrowserModule,
     ReactiveFormsModule,
     HttpClientModule,
-    AppRoutingModule
+    AppRoutingModule,
+    SonComponent
   ],
   providers: [
     CookieService,

@@ -1,0 +1,38 @@
+<div class="concert-hall">
+  <div class="controls">
+    <button (click)="togglePlay()">
+      {{ isPlaying ? 'Pause' : 'Lancer la fête' }} 🎵
+    </button>
+  </div>
+  
+  <audio #audioPlayer 
+       [src]="currentTrack" 
+       (ended)="isPlaying = false" 
+       crossorigin="anonymous">
+  </audio>
+
+  <div class="stage">
+    
+    <div class="cat-container">
+      <img src="images/cat.jpg" 
+           [style.transform]="'translateY(-' + bassLevel + 'px)'" 
+           alt="Bass Cat">
+      <span>Graves</span>
+    </div>
+
+    <div class="cat-container">
+      <img src="images/cat.jpg" 
+           [style.transform]="'translateY(-' + midLevel + 'px)'" 
+           alt="Mid Cat">
+      <span>Médiums</span>
+    </div>
+
+    <div class="cat-container">
+      <img src="images/cat.jpg" 
+           [style.transform]="'translateY(-' + trebleLevel + 'px)'" 
+           alt="Treble Cat">
+      <span>Aigus</span>
+    </div>
+
+  </div>
+</div>

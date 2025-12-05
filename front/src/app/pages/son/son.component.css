@@ -1,0 +1,50 @@
+/* disco-cats.component.css */
+.concert-hall {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 100vh;
+  pointer-events: none; /* Laisse l'utilisateur cliquer sur le reste du site */
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  z-index: 1000; /* En fond */
+  background: rgba(0, 0, 0, 0.8); /* Légère ombre au sol */
+}
+
+.controls {
+  pointer-events: auto; /* Réactive le clic pour le bouton */
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  z-index: 10;
+}
+
+.stage {
+  display: flex;
+  justify-content: space-around;
+  align-items: flex-end;
+  padding-bottom: 20px;
+  height: 300px; /* Espace de saut */
+}
+
+.cat-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  transition: transform 0.05s ease-out; /* Lissage pour éviter les saccades */
+}
+
+.cat-container img {
+  width: 100px; /* Ajuste selon tes images */
+  height: auto;
+  transition: transform 0.1s linear; /* L'animation du saut */
+}
+
+.cat-container span {
+  color: white;
+  font-family: sans-serif;
+  margin-top: 10px;
+  opacity: 0.7;
+}
