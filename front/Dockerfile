@@ -26,7 +26,7 @@ COPY --from=build /app/dist/projet-restau/browser /usr/share/nginx/html
 # 2. Correction Angular SSR/Prerender :
 # Si index.html n'a pas été généré (à cause de la redirection), on utilise index.csr.html
 RUN if [ ! -f /usr/share/nginx/html/index.html ] && [ -f /usr/share/nginx/html/index.csr.html ]; then \
-        mv /usr/share/nginx/html/index.csr.html /usr/share/nginx/html/index.html; \
+        cp /usr/share/nginx/html/index.csr.html /usr/share/nginx/html/index.html; \
     fi
 
 EXPOSE 80
