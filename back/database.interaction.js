@@ -12,8 +12,8 @@ const pool = mysql.createPool({
   queueLimit: 0
 });
 
-async function get_all_Plats() {
-  const [rows] = await pool.query('SELECT * FROM PLATS');
+async function get_all_Posts() {
+  const [rows] = await pool.query('SELECT * FROM POSTS');
   return rows;
 }
 
