@@ -17,7 +17,9 @@ export class ApiService {
   postPosts(data:any):Observable<any> {
     return this.http.post(`${this.baseUrl}/Posts`, data);
   }
-
+  deletePost(id: number | string): Observable<any> {
+    return this.http.delete(`${this.baseUrl}/Posts/${id}`);
+  }
   createItem(data: any): Observable<any> {
     return this.http.post(`${this.baseUrl}/add`, data);
   }

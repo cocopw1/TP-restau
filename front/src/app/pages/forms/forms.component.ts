@@ -12,22 +12,32 @@ export class FormsComponent {
   newPostContent =""
   Posts:any = []
   isLoggedIn = false;
+  isAdmin = false;
   constructor(private apiService: ApiService,private authService: AuthService){};
-  ngOnInit() {
-    if(this.authService.isAuthenticated() == undefined){
-      this.isLoggedIn=false;
-    }else{
-      this.isLoggedIn = this.authService.isAuthenticated(); // ✅ Vérifie si l'utilisateur est connecté
+ngOnInit() {
+    // Gestion connexion
+    if (this.authService.isAuthenticated() == undefined) {
+      this.isLoggedIn = false;
+    } else {
+      this.isLoggedIn = this.authService.isAuthenticated();
     }
-    this.apiService.getPosts().subscribe(
-      (data) => {
-        this.Posts = data;
-        console.log(this.Posts)
-      },
-      (error) => {
-        console.error('Erreur lors du chargement des données', error);
-      }
-    );}// ...existing code...
+
+    // ✅ Récupération du statut Admin
+    this.authService.isAdmin$.subscribe(status => {
+        this.isAdmin = status;
+    });
+
+    this.loadPosts();
+  }
+
+  loadPosts() {
+      this.apiService.getPosts().subscribe(
+        (data) => {
+          this.Posts = data;
+        },
+        (error) => console.error('Erreur', error)
+      );
+  }
 addPost() {
   if (!this.newPostContent) return;
 
@@ -53,5 +63,20 @@ addPost() {
       console.error('Erreur lors de l\'ajout du post', error);
     }
   );
+
 }
+deletePost(post: any) {
+    if(!confirm("Voulez-vous vraiment supprimer ce message ?")) return;
+
+    // ATTENTION : Vérifie si ton backend utilise 'id' ou '_id'
+    const id = post.id || post._id; 
+
+    this.apiService.deletePost(id).subscribe({
+        next: () => {
+            // On retire le post de la liste localement pour éviter de recharger tout
+            this.Posts = this.Posts.filter((p: any) => (p.id || p._id) !== id);
+        },
+        error: (err) => console.error("Erreur suppression", err)
+    });
+  }
 }

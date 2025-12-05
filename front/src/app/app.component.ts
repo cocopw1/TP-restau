@@ -10,16 +10,20 @@ import { Router } from '@angular/router'; // Pour la redirection propre
 })
 export class AppComponent implements OnInit {
   isLoggedIn = false;
-
+  isAdmin = false;
   constructor(
     private authService: AuthService,
     private router: Router // Injection du router
   ) {}
 
   ngOnInit() {
-    // C'est ICI la magie : on écoute les changements en temps réel
     this.authService.isLoggedIn$.subscribe((status) => {
       this.isLoggedIn = status;
+    });
+
+    // ✅ On écoute si c'est un admin
+    this.authService.isAdmin$.subscribe((status) => {
+      this.isAdmin = status;
     });
   }
 

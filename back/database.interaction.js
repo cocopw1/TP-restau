@@ -23,20 +23,21 @@ async function login(data) {
 async function add_Posts(article, userId, username) {
   await pool.query('INSERT INTO POSTS (article, user_id, username) VALUES (?, ?, ?)', [article, userId, username]);
 }
-// --- NOUVELLE FONCTION ---
 async function createUser(name, hashedPassword, isAdmin) {
-  // On insère et on récupère le résultat pour avoir l'insertId
   const [result] = await pool.query(
     'INSERT INTO USERS (name, password, admin) VALUES (?, ?, ?)', 
     [name, hashedPassword, isAdmin]
   );
-  // Avec mysql2, l'ID généré est dans result.insertId
   return result.insertId; 
 }
-
+async function delete_Post(id) {
+  const [result] = await pool.query('DELETE FROM POSTS WHERE id = ?', [id]);
+  return result;
+}
 module.exports = {
   login,
   get_all_Posts,
   add_Posts,
   createUser,
+  delete_Post,
 };
