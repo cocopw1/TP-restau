@@ -9,7 +9,7 @@ let dbi = require('./database.interaction.js');
 app.use(
   cors({
     origin: "http://localhost:4200",
-    methods: ["GET", "POST"],
+    methods: ["GET", "POST","DELETE"],
     allowedHeaders: ["Content-Type", "Authorization"],
     credentials: true,
   })
@@ -71,7 +71,28 @@ app.post('/Posts', authenticateToken, async (req, res) => {
         res.status(500).json({ error: "Erreur serveur lors de l'ajout du post" });
     }
 });
-// 2. INSCRIPTION (Register) + Auto-Login
+app.delete('/Posts/:id', authenticateToken, async (req, res) => {
+    const id = req.params.id;
+    
+    // SÉCURITÉ : On vérifie si l'utilisateur est Admin grâce au token décodé (req.user)
+    if (!req.user.isAdmin) {
+        return res.status(403).json({ error: "Accès interdit : réservé aux administrateurs" });
+    }
+
+    try {
+        const result = await dbi.delete_Post(id);
+        
+        // Si affectedRows est 0, c'est que l'ID n'existait pas
+        if (result.affectedRows === 0) {
+            return res.status(404).json({ error: "Post non trouvé" });
+        }
+        
+        res.json({ message: "Post supprimé avec succès" });
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ error: "Erreur serveur lors de la suppression" });
+    }
+});
 app.post('/register', async (req, res) => {
     try {
         const { username, password, isAdmin } = req.body;
@@ -95,7 +116,8 @@ app.post('/register', async (req, res) => {
         );
 
         // D. On renvoie le tout
-        res.status(201).json({ token: token, message: "Utilisateur créé et connecté" });
+        res.status(201).json({ token: token,
+          isAdmin: isAdmin , message: "Utilisateur créé et connecté" });
 
     } catch (error) {
         console.error(error);
@@ -130,7 +152,10 @@ app.post('/login', async (req, res) => {
         const token = jwt.sign(payload, secretKey, { expiresIn: '1h' });
         
         console.log("Login succès pour :", username);
-        res.json({ token: token });
+        res.json({ 
+            token: token, 
+            isAdmin: user.admin 
+        });
       } else {
         // D. Mauvais mot de passe
         res.status(401).send('Mot de passe incorrect');
